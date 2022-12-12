@@ -14,7 +14,7 @@ export default function Login() {
     }
   }
   function onsubmit(){
-    var timestamp = new Date().getTime()+(1* 60* 1000)
+    var timestamp = new Date().getTime()+(5* 60* 1000)
       localStorage.setItem("key", JSON.stringify(timestamp));
   }
   return (

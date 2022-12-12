@@ -5,9 +5,8 @@ import Login from "./container/login";
 import Singup from "./container/singup";
 import Pen from "./components/pen";
 import Circledrow from "./components/circle";
-import Reactangle from "./components/reactangle";
 import Layout from "./container/layout";
-import Dashboard from "./container/dashboard";
+import Rectangle from "./components/reactangle";
 function App() {
   const [user, setUser] = useState("");
   useEffect(() => {
@@ -38,7 +37,7 @@ function App() {
             path="/reactangle"
             element={
               <Layout>
-                <Reactangle />
+                <Rectangle/>
               </Layout>
             }
           />

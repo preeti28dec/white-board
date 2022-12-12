@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Stage, Layer, Rect } from "react-konva";
 import styled from "styled-components";
 
-export default function Reactangle() {
+export default function Rectangle () {
   const [annotations, setAnnotations] = useState([]);
   const [newAnnotation, setNewAnnotation] = useState([]);
 
