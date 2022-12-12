@@ -1,24 +1,58 @@
-import logo from './logo.svg';
-import './App.css';
-
+import "./App.css";
+import { Routes, Route, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Login from "./container/login";
+import Singup from "./container/singup";
+import Pen from "./components/pen";
+import Circledrow from "./components/circle";
+import Reactangle from "./components/reactangle";
+import Layout from "./container/layout";
+import Dashboard from "./container/dashboard";
 function App() {
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    const auth = localStorage.getItem("userRegister");
+    const user = !!auth ? JSON.parse(auth) : undefined;
+    setUser(user);
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="">
+        <Routes>
+          {user ? (
+            <Route path="/" element={<Layout />} />
+          ) : (
+            <Route exact path="/login" element={<Login />} />
+          )}
+          <Route path="/singup" element={<Singup />} />
+          <Route exact path="/login" element={<Login />} />
+          <Route
+            path="/pen"
+            element={
+              <Layout>
+                <Pen />
+              </Layout>
+            }
+          />
+          <Route
+            path="/reactangle"
+            element={
+              <Layout>
+                <Reactangle />
+              </Layout>
+            }
+          />
+          <Route
+            path="/circle"
+            element={
+              <Layout>
+                <Circledrow />
+              </Layout>
+            }
+          />
+        </Routes>
+      </div>
+    </>
   );
 }
 
