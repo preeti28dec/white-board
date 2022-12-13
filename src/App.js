@@ -9,8 +9,8 @@ function App() {
   useEffect(() => {
     const auth = localStorage.getItem("userRegister");
     const user = JSON.parse(auth);
-    if(user.token){
-      setUser(true);
+    if(user){
+      setUser(user);
     }
   });
   console.log(user, "auth");
