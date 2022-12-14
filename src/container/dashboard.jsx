@@ -21,8 +21,8 @@ export default function DashBoard() {
     const data = JSON.parse(localStorage.getItem("key"));
     const timer = setInterval(() => {
       if (new Date().getTime() > data) {
-        navigate("/login");
         clearInterval(timer);
+        // navigate("/login");
       } else {
         setClock(timeDifference(data));
       }
