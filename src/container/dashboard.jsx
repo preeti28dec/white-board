@@ -21,7 +21,7 @@ export default function DashBoard() {
     const data = JSON.parse(localStorage.getItem("key"));
     const timer = setInterval(() => {
       if (new Date().getTime() > data) {
-        // navigate("/login");
+        navigate("/login");
         clearInterval(timer);
       } else {
         setClock(timeDifference(data));
@@ -39,7 +39,7 @@ export default function DashBoard() {
            <div className="my-4">
              <button
                className={
-                 clock <= "0:10"
+                 clock < "0:10"
                    ? " w-16 h-16 bg-red-600 rounded-full text-white font-bold "
                    : "font-bold w-16 h-16 bg-slate-600  rounded-full"
                }
