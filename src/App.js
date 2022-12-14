@@ -1,32 +1,25 @@
-import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./container/login";
-import Singup from "./container/singup";
 import { useEffect, useState } from "react";
 import DashBoard from "./container/dashboard";
+import Signup from "./container/singup";
 function App() {
-  const [user, setUser] = useState(false);
-  useEffect(() => {
-    const auth = localStorage.getItem("userRegister");
-    const user = JSON.parse(auth);
-    if(user){
-      setUser(user);
-    }
-  });
-  console.log(user, "auth");
+  const [isAuthenticated, setIsAuthenticated] = useState(() => JSON.parse(localStorage.getItem("userRegister")) || false);
+  const setAuth = (value) => {
+    setIsAuthenticated(value);
+  };
+  useEffect(()=>{
+    localStorage.setItem("auth", JSON.stringify(isAuthenticated));
+  }, [isAuthenticated]);
+
+  console.log(isAuthenticated);
   return (
     <>
-      <div className="">
-        <Routes>
-          {user? (
-            <Route path="/" element={<DashBoard/>} />
-          ) : (
-            <Route exact path="/login" element={<Login />} />
-          )}
-          <Route exact path="/login" element={<Login />} />
-          <Route path="/singup" element={<Singup />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={ isAuthenticated ? <DashBoard /> : <Navigate to="/login" replace /> }/>
+        <Route path="/login" element={<Login setAuth={setAuth} />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
     </>
   );
 }

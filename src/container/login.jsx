@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login({setAuth}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   let navigate = useNavigate();
+  const users = JSON.parse(localStorage.getItem("userRegister")) || [];
+  const found = users.email === email && users.password === password;
+  if (found) {
+    setAuth(found);
+    navigate("/", { replace: true });
+  }
+
+
   function logiData() {
     let data = JSON.parse(localStorage.getItem("userRegister"));
     if (data.email === email && data.password === password) {
@@ -47,10 +55,7 @@ export default function Login() {
           </button>
           <div className="mt-6">
             <button
-              onClick={() => {
-                logiData();
-                onsubmit();
-              }}
+              onClick={() => {logiData(); onsubmit(); }}
               className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600"
             >
               Login
@@ -63,13 +68,8 @@ export default function Login() {
 
         <p className="mt-8 text-xs font-light text-center text-gray-700">
           Dont have an account?
-          <button
-            className="font-medium text-purple-600 hover:underline"
-            onClick={() => {
-              // navigate('/singup');
-            }}
-          >
-            <Link to="/singup">Sign up</Link>
+          <button className="font-medium text-purple-600 hover:underline">
+            <Link to="/signup">Sign up</Link>
           </button>
         </p>
       </div>

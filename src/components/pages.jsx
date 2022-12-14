@@ -1,22 +1,18 @@
 import { useEffect, useState } from "react";
 import React from "react";
+import { FaUndo, FaRedo } from "react-icons/fa";
 import { BsPencilFill, BsCircleFill } from "react-icons/bs";
-import { GrStatusDisabledSmall } from "react-icons/gr";
-import { Stage, Layer, Rect, Circle, Line } from "react-konva";
+import { Stage, Layer, Circle, Line, Text } from "react-konva";
 
 const DrawingPage = () => {
   const [circleSet, setcircleSet] = useState([]);
   const [newAnnotation, setNewAnnotation] = useState([]);
   const [tool, setTool] = useState("pen");
   const [lines, setLines] = useState([]);
+  const [redo, setRedo] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
-
-  const [dataSetLocal, setDataSetLocal] = useState(
-    JSON.parse(localStorage.getItem("whitebord")) || []
-  );
-
+  const [dataSetLocal, setDataSetLocal] = useState(JSON.parse(localStorage.getItem("whitebord")) || []);
   const isDrawing = React.useRef(false);
-
   const handleMouseDownPen = (e) => {
     if (activeTab === 1) {
       isDrawing.current = true;
@@ -31,12 +27,10 @@ const DrawingPage = () => {
   };
 
   const handleMouseMovePen = (e) => {
-    console.log("activeTab pen ");
     if (activeTab === 1) {
       if (!isDrawing.current) {
         return;
       }
-      // console.log("ptn000");
       const stage = e.target.getStage();
       const point = stage.getPointerPosition();
       let lastLine = lines[lines.length - 1];
@@ -47,7 +41,6 @@ const DrawingPage = () => {
         "whitebord",
         JSON.stringify([...lines, ...dataSetLocal])
       );
-      // console.log(lines.map((i) => i.tool))
     } else {
       handleMouseMove(e);
     }
@@ -57,7 +50,6 @@ const DrawingPage = () => {
     if (activeTab === 1) {
       isDrawing.current = false;
     } else {
-      console.log("circlr+++");
       if (newAnnotation.length === 1) {
         const sx = newAnnotation[0].x;
         const sy = newAnnotation[0].y;
@@ -65,8 +57,8 @@ const DrawingPage = () => {
         const annotationToAdd = {
           x: sx,
           y: sy,
-          width: x - sx,
-          height: y - sy,
+          width: Math.abs(x - sx),
+          height: Math.abs(y - sy),
           key: circleSet.length + 1,
         };
         circleSet.push(annotationToAdd);
@@ -89,17 +81,15 @@ const DrawingPage = () => {
   };
 
   const handleMouseUp = (e) => {
-    // console.log("activeTab circle   ", activeTab);
-    // console.log("circlr+++");
     if (newAnnotation.length === 1) {
-      const sx = newAnnotation[0].x;
-      const sy = newAnnotation[0].y;
+      const sx = parseInt(newAnnotation[0].x);
+      const sy = parseInt(newAnnotation[0].y);
       const { x, y } = e.target.getStage().getPointerPosition();
       const annotationToAdd = {
         x: sx,
         y: sy,
-        width: x - sx,
-        height: y - sy,
+        width: Math.abs(x - sx),
+        height: Math.abs(y - sy),
         key: circleSet.length + 1,
       };
       circleSet.push(annotationToAdd);
@@ -109,30 +99,45 @@ const DrawingPage = () => {
         "whitebord",
         JSON.stringify([...circleSet, ...newAnnotation, ...dataSetLocal])
       );
-      console.log(circleSet, "llll");
     }
   };
 
   const handleMouseMove = (e) => {
     if (newAnnotation.length === 1) {
-      const sx = newAnnotation[0].x;
-      const sy = newAnnotation[0].y;
+      const sx = parseInt(newAnnotation[0].x);
+      const sy = parseInt(newAnnotation[0].y);
       const { x, y } = e.target.getStage().getPointerPosition();
       setNewAnnotation([
         {
           x: sx,
           y: sy,
-          width: x - sx,
-          height: y - sy,
+          width: Math.abs(x - sx),
+          height: Math.abs(y - sy),
           key: "0",
         },
       ]);
     }
   };
-
   const circleSetToDraw = [...circleSet, ...newAnnotation, ...dataSetLocal];
   const penSetToDraw = [...lines, ...dataSetLocal];
 
+  const removeMe = () => {
+    const rem = dataSetLocal.pop();
+    setRedo((s) => [...s, rem]);
+    setDataSetLocal(
+      dataSetLocal.filter((i, ind) => ind !== dataSetLocal.length - i)
+    );
+  };
+  const handleRedo = () => {
+    if (redo.length > 0) {
+      setDataSetLocal([...dataSetLocal, redo[redo.length - 1]]);
+      setRedo(redo.filter((i, ind) => ind !== redo.length - 1));
+    }
+  };
+
+  useEffect(()=>{
+    console.log(dataSetLocal);
+  },[dataSetLocal])
   return (
     <>
       <div className=" border w-full h-full">
@@ -160,10 +165,6 @@ const DrawingPage = () => {
               handleMouseMovePen(e);
             }
           }}
-
-          // onMouseDown={activeTab === 0 ? handleMouseDown (e): handleMouseDownPen(e)}
-          // onMouseUp= {activeTab === 0 ? handleMouseUp(e) : handleMouseUpPen ()}
-          // onMouseMove={activeTab === 0 ? handleMouseMove(e) : handleMouseMovePen(e)}
         >
           <Layer>
             {circleSetToDraw.map((value, i) => {
@@ -173,7 +174,7 @@ const DrawingPage = () => {
                   x={value.x}
                   y={value.y}
                   width={value.width}
-                  height={value.width}
+                  height={value.height}
                   fill="transparent"
                   stroke="black"
                 />
@@ -194,34 +195,11 @@ const DrawingPage = () => {
                 }
               />
             ))}
-
-            {/* {circleSetToDraw.map((value) => {
-              return (
-                <Rect
-                  x={value.x}
-                  y={value.y}
-                  width={value.width}
-                  height={value.width}
-                  fill="transparent"
-                  stroke="black"
-                />
-              );
-            })} */}
           </Layer>
         </Stage>
       </div>
       <div className="flex justify-center items-center mx-auto mt-3">
         <div className=" bg-gray-300 rounded-full shadow-lg p-2 px-4 flex gap-4 justify-between">
-          <div
-            onClick={() => setActiveTab(1)}
-            className={
-              activeTab === 1
-                ? "bg-blue-600 p-3 rounded-full text-white"
-                : "p-3 "
-            }
-          >
-            <BsPencilFill />
-          </div>
           <div
             onClick={() => setActiveTab(0)}
             className={
@@ -232,16 +210,26 @@ const DrawingPage = () => {
           >
             <BsCircleFill />
           </div>
-
           <div
-            onClick={() => setActiveTab(2)}
+            onClick={() => setActiveTab(1)}
             className={
-              activeTab === 2
+              activeTab === 1
                 ? "bg-blue-600 p-3 rounded-full text-white"
                 : "p-3 "
             }
           >
-            <GrStatusDisabledSmall />
+            <BsPencilFill />
+          </div>
+          <div className={dataSetLocal.length > 0 ? "flex gap-4 " : "hidden"}>
+            <div
+              onClick={removeMe}
+              className={"bg-blue-400 p-3 rounded-full text-white"}
+            >
+              <FaUndo />
+            </div>
+            <div onClick={handleRedo} className={redo.length > 0? "bg-gray-500 p-3 rounded-full text-white": " hidden "}>
+              <FaRedo />
+            </div>
           </div>
         </div>
       </div>
