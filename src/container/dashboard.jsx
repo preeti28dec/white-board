@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import DrawingPage from "../components/pages";
+import DrawingPage from "../components/drawingPage";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -32,6 +32,7 @@ export default function DashBoard() {
     };
   }, []);
 
+
   return (
     <Root>
       <div className="flex justify-end items-center p-4">
@@ -41,7 +42,7 @@ export default function DashBoard() {
                className={
                  clock < "0:10"
                    ? " w-16 h-16 bg-red-600 rounded-full text-white font-bold "
-                   : "font-bold w-16 h-16 bg-slate-600  rounded-full"
+                   : "font-bold w-16 h-16 bg-slate-400  rounded-full"
                }
              >
                {clock}

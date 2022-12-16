@@ -12,7 +12,6 @@ function App() {
     localStorage.setItem("auth", JSON.stringify(isAuthenticated));
   }, [isAuthenticated]);
 
-  console.log(isAuthenticated);
   return (
     <>
       <Routes>
