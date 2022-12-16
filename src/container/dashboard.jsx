@@ -22,7 +22,7 @@ export default function DashBoard() {
     const timer = setInterval(() => {
       if (new Date().getTime() > data) {
         clearInterval(timer);
-        // navigate("/login");
+        navigate("/login");
       } else {
         setClock(timeDifference(data));
       }
@@ -37,6 +37,7 @@ export default function DashBoard() {
     <Root>
       <div className="flex justify-end items-center p-4">
       <div className="maine_login_page">
+      {/* <button className="" onClick={()=>navigate("/login")}>Logout</button> */}
            <div className="my-4">
              <button
                className={

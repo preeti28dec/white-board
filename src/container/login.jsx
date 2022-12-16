@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Login({setAuth}) {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   let navigate = useNavigate();
-  const users = JSON.parse(localStorage.getItem("userRegister")) || [];
-  const found = users.email === email && users.password === password;
-  if (found) {
-    setAuth(found);
-    navigate("/", { replace: true });
-  }
-
 
   function logiData() {
     let data = JSON.parse(localStorage.getItem("userRegister"));

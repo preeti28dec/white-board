@@ -4,19 +4,23 @@ import { useEffect, useState } from "react";
 import DashBoard from "./container/dashboard";
 import Signup from "./container/singup";
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => JSON.parse(localStorage.getItem("userRegister")) || false);
-  const setAuth = (value) => {
-    setIsAuthenticated(value);
-  };
-  useEffect(()=>{
-    localStorage.setItem("auth", JSON.stringify(isAuthenticated));
-  }, [isAuthenticated]);
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    const auth = localStorage.getItem("userRegister");
+    const user = !!auth ? JSON.parse(auth) : undefined;
+    setUser(user);
+  }, []);
+  console.log(user);
 
   return (
     <>
       <Routes>
-        <Route path="/" element={ isAuthenticated ? <DashBoard /> : <Navigate to="/login" replace /> }/>
-        <Route path="/login" element={<Login setAuth={setAuth} />} />
+        {user ? (
+          <Route path="/" element={<DashBoard />} />
+        ) : (
+          <Route path="/login" element={<Login />} />
+        )}
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
     </>
